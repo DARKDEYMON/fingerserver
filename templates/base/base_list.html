@@ -1,0 +1,68 @@
+{% extends "base/center_body.html" %}
+	{% block contend %}
+		<div class="card">
+			<div class="card-header">
+				{% block name %}
+					
+				{% endblock name %}
+			</div>
+			<div class="card-body">
+				{% block search %}
+					{% include "base/base_searchform.html" %}
+				{% endblock search %}
+				<div class="table-responsive-md">
+					{% block bodylist %}
+						
+					{% endblock bodylist %}
+				</div>
+				{% if not object_list %}
+					<h3 class="text-center">No Existen Objetos Creados</h3>
+				{% endif %}
+				{% if is_paginated %}
+					<div class="d-flex justify-content-center">
+						<ul class="pagination">
+							{% if page_obj.has_previous %}
+							    <li class="page-item">
+									<a class="page-link" href="?page={{ page_obj.previous_page_number }}
+									{% if request.GET %}
+										{% for key, value in request.GET.items %}
+											{% if key != 'page' %}
+												&{{key}}={{value}}
+											{% endif %}
+										{% endfor %}
+									{% endif %}">Anterior</a>
+								</li>
+							{% endif %}
+							    <li class="page-item">
+							    	<div class="page-link">
+										<form role="form" method="get" style="display: inline-flex;">
+											{% if request.GET %}
+												{% for key, value in request.GET.items %}
+													{% if key != 'page' %}
+														<input type="hidden" name="{{key}}" value="{{value}}">
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+											<input autocomplete="off" style="width: 30px; height: 20px;" type="text" name="page" value="{{ page_obj.number }}">
+										</form>
+										de {{ page_obj.paginator.num_pages }}.
+									</div>
+								</li>
+							{% if page_obj.has_next %}
+							    <li class="page-item">
+									<a class="page-link" href="?page={{ page_obj.next_page_number }}
+									{% if request.GET %}
+										{% for key, value in request.GET.items %}
+											{% if key != 'page' %}
+												&{{key}}={{value}}
+											{% endif %}
+										{% endfor %}
+									{% endif %}">Siguiente</a>
+							    </li>
+							{% endif %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+		</div>	
+	{% endblock contend %}

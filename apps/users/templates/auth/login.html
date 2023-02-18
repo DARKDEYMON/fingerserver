@@ -1,0 +1,62 @@
+{% extends "base/base_form.html" %}
+{% load static %}
+	{% block navbar %}
+		
+	{% endblock navbar %}
+
+	{% block name %}
+		<h3 class="text-center">Ingresar</h3>
+	{% endblock name %}
+
+	{% block bodyform %}
+		{% if form.errors %}
+	        <div class="alert alert-danger" role="alert">
+	           Tu nombre de usuario y contraseña no se encontraron. Por favor intenta de nuevo.
+	        </div>
+		{% endif %}
+
+		{% if next %}
+		    {% if user.is_authenticated %}
+		        <div class="alert alert-danger" role="alert">
+		            Tu cuenta no tiene acceso a esta página. Por favor pide los permisos necesarios al administrador o inicia sesion con otra cuenta.
+		        </div>
+		    {% else %}
+		        <div class="alert alert-danger" role="alert">
+		            Por favor inicie sesión para mirar esta página.
+		        </div>
+		    {% endif %}
+		{% endif %}
+
+		<form method="post" action="{% url 'users:login' %}">
+		    {% csrf_token %}
+		    <div class="mb-3">
+		        <input class="form-control" type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username" placeholder="Nombre de usuario">
+		    </div>
+		    <div class="mb-3">
+		        <input class="form-control" type="password" name="password" autocomplete="current-password" required="" id="id_password" placeholder="contraseña">
+		    </div>
+		    <input type="hidden" name="next" value="{{ next }}">
+		    <div class="mb-3">
+		        <div class="col-md-12">
+		            <input class="btn btn-primary" style="width: 100%;" type="submit" value="Login">
+		        </div>
+		    </div>
+		</form>
+	{% endblock bodyform %}
+	{% comment %}
+		
+	{% block extra %}
+		<div class="row m-5 align-items-center">
+			<div class="col-sm-9">
+				<div class="container">
+					<h1>{{ config.BUSINESS_NAME }}</h1>
+					<p>{{ config.SITE_NAME }}</p>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<img src="{% static "logo.png" %}" width="200" alt="">
+			</div>
+		</div>
+	{% endblock extra %}
+
+	{% endcomment %}
