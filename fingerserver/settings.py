@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
-    'apps.users'
+    'apps.users',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,9 @@ LOGOUT_REDIRECT_URL = reverse_lazy('users:login')
 #crispy
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        
+    ]
+}

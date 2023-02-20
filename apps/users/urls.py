@@ -14,12 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.views import LoginView, logout_then_login, PasswordResetView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from .views import *
+
+from rest_framework import routers
+from .viewsets import *
+
+router = routers.DefaultRouter()
+
+router.register(r'user', UserViewSet)
 
 urlpatterns = [
     path('', login_required(main), name='main'),
@@ -33,4 +40,8 @@ urlpatterns = [
     ),
     path('createuser/', login_required(CreateUserView.as_view()), name='create_user'),
     path('listuser/', login_required(ListUserView.as_view()), name='list_user'),
+
+    path('metricasinlineview/<int:pk>/', login_required(metricas_inline_view), name='metricas_inline'),
+    path('rest/',include(router.urls)),
+    path('rest/fingerprint/',FigerPrintViewSet.as_view(), name='figerprint')
 ]

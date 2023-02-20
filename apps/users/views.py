@@ -3,6 +3,8 @@ from django.views.generic import ListView, CreateView, UpdateView, FormView, Del
 from django.urls import reverse_lazy
 from django.db.models import CharField
 from django.db.models.functions import Cast
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 from .forms import *
 
 # Create your views here.
@@ -54,3 +56,20 @@ class ListUserView(ListView):
 				).order_by('id')
 		else:
 			return self.model.objects.all().filter(is_staff=False).order_by('id')
+
+def metricas_inline_view(request, pk):
+	instance = get_object_or_404(User, id=pk)
+	queryset = Metricas.objects.filter(user=instance)
+	fom_inline = metricas_inline
+	helper = MetricasHelperForm()
+	if request.method == 'POST':
+		formset = fom_inline(request.POST, request.FILES, instance=instance)
+		if formset.is_valid():
+			formset.save()
+			if 'add' in request.POST:
+				return HttpResponseRedirect(request.path)
+			else:
+				return HttpResponseRedirect(reverse_lazy('users:list_user'))
+	else:
+		formset = fom_inline(instance=instance)
+	return render(request, 'metricas.html',{'formset':formset, 'helper':helper, 'instance':instance})

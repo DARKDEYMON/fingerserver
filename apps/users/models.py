@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
+import numpy as np
+from .fingermodule import *
+import cv2
 
 # Create your models here.
 
@@ -10,6 +14,15 @@ class Metricas(models.Model):
 		null=False,
 		blank=False
 	)
+	def save(self, *args, **kwargs):
+		read = self.imagen.read()
+		image = readBytesCV2(read)
+		limpiado = limpiarBytes(image)
+
+		ret, buf = cv2.imencode('.jpg', limpiado)
+		content = ContentFile(buf.tobytes())
+		self.imagen.save(str(self.imagen.name), content, save=False)
+		return super().save(*args, **kwargs)
 	class Meta:
 		permissions = (
 			("users", "Modulo de usuarios"),
