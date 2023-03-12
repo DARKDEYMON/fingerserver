@@ -126,7 +126,8 @@ def compararBytes(sample1, sample2):
 
 	matches_points = []
 
-	ratio_thresh = 0.4
+	#0.4
+	ratio_thresh = 0.6
 	matches_points = []
 	for m,n in matches:
 	    if m.distance < ratio_thresh * n.distance:

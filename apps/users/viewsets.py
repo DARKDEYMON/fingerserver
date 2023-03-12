@@ -36,12 +36,14 @@ class FigerPrintViewSet(APIView):
 		maxobj = None
 		for m in metricas:
 			a, b, c =compararBytes(image_prueba, cv2.imread(m.imagen.path))
-			if(c>maxp or c>=0.7):
+			print(m.user, c)
+			if(c>maxp or c>=0.5):
 				maxp=c
 				maxobj = m
+			if(c>=0.5):
 				break
-		print(maxobj, maxp)
-		if(maxobj and maxp>=0.7):
+		#print(maxobj, maxp)
+		if(maxobj and maxp>=0.5):
 			serializer = UserSerializer(maxobj.user)
 			print(serializer.data)
 			return Response(serializer.data)
