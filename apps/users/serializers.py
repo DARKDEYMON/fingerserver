@@ -6,6 +6,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','username','first_name','last_name','email']
 
+class MetricasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metricas
+        fields = ['id','user','imagen']
+
 class FigerSerializer(serializers.Serializer):
     image = serializers.FileField()
     class Meta:

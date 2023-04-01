@@ -57,6 +57,11 @@ class ListUserView(ListView):
 		else:
 			return self.model.objects.all().filter(is_staff=False).order_by('id')
 
+class ConstanceView(FormView):
+	template_name = 'constance.html'
+	form_class = ConstanceForm
+	success_url = '/'
+
 def metricas_inline_view(request, pk):
 	instance = get_object_or_404(User, id=pk)
 	queryset = Metricas.objects.filter(user=instance)

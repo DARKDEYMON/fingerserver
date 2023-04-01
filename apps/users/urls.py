@@ -27,6 +27,7 @@ from .viewsets import *
 router = routers.DefaultRouter()
 
 router.register(r'user', UserViewSet)
+router.register(r'metricas', MetricasViewSet)
 
 urlpatterns = [
     path('', login_required(main), name='main'),
@@ -40,6 +41,7 @@ urlpatterns = [
     ),
     path('createuser/', login_required(CreateUserView.as_view()), name='create_user'),
     path('listuser/', login_required(ListUserView.as_view()), name='list_user'),
+    path('constance/', login_required(ConstanceView.as_view()), name='constance'),
 
     path('metricasinlineview/<int:pk>/', login_required(metricas_inline_view), name='metricas_inline'),
     path('rest/',include(router.urls)),

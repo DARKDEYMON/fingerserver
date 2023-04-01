@@ -10,6 +10,10 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.filter(is_staff=False)
 	serializer_class = UserSerializer
 
+class MetricasViewSet(viewsets.ModelViewSet):
+	queryset = Metricas.objects.filter()
+	serializer_class = MetricasSerializer
+
 """
 @api_view(['GET', 'POST'])
 def figer_print_viewset(request):
@@ -23,13 +27,15 @@ def figer_print_viewset(request):
 class FigerPrintViewSet(APIView):
 	serializer_class = FigerSerializer
 	model_metricas = Metricas
+	tickeo = Tiqueo
 	def get(self, request, *args, **kwargs):
 		return Response({"message":"Envie una foto via POST para la verificacion de Huella"})
 
 	def post(self, request, *args, **kwargs):
 		imagenr = request.FILES['image']
-		read = imagenr.read()
-		image_prueba = readBytesCV2(read)
+		metrica = imagenr.read()
+		"""
+		image_prueba = readBytesCV2(metrica)
 		image_prueba = limpiarBytes(image_prueba)
 		metricas = self.model_metricas.objects.all()
 		maxp = 0
@@ -45,6 +51,15 @@ class FigerPrintViewSet(APIView):
 		#print(maxobj, maxp)
 		if(maxobj and maxp>=0.5):
 			serializer = UserSerializer(maxobj.user)
+			print(serializer.data)
+			return Response(serializer.data)
+		return Response({"user":None})
+		"""
+		res = compareLote(metrica, self.model_metricas.objects.all())
+		if(res):
+			user = res.user
+			self.tickeo.objects.create(user=user)
+			serializer = UserSerializer(user)
 			print(serializer.data)
 			return Response(serializer.data)
 		return Response({"user":None})

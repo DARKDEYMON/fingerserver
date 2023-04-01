@@ -41,8 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
+    'rest_framework',
+    'constance',
     'apps.users',
-    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'constance.context_processors.config'
             ],
         },
     },
@@ -152,3 +154,10 @@ REST_FRAMEWORK = {
         
     ]
 }
+
+CONSTANCE_CONFIG = {
+    'UMBRAL_SIMILITUD': (0.7, 'Umbral de Similitud', float),
+    'CANTIDAD_COINCIDENCIAS': (100, 'Cantidad e coincidencias en la metrica', int)
+}
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_SUPERUSER_ONLY = False

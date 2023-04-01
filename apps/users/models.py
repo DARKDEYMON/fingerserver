@@ -14,6 +14,7 @@ class Metricas(models.Model):
 		null=False,
 		blank=False
 	)
+	"""
 	def save(self, *args, **kwargs):
 		read = self.imagen.read()
 		image = readBytesCV2(read)
@@ -23,9 +24,20 @@ class Metricas(models.Model):
 		content = ContentFile(buf.tobytes())
 		self.imagen.save(str(self.imagen.name), content, save=False)
 		return super().save(*args, **kwargs)
+	"""
 	class Meta:
 		permissions = (
 			("users", "Modulo de usuarios"),
 		)
+	def __str__(self):
+		return str(self.user)
+
+class Tiqueo(models.Model):
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+	fecha = models.DateTimeField(
+		auto_now_add = True,
+		blank = False,
+		null = False
+	)
 	def __str__(self):
 		return str(self.user)
