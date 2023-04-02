@@ -8,6 +8,12 @@ from constance import config
 from django.conf import settings
 from .models import *
 
+class Html5DateInput(forms.DateInput):
+	input_type = 'date'
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.format = ('%Y-%m-%d')
+
 class search_form(forms.Form):
 	search = forms.CharField(required=False, label="", help_text="", widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Buscar...'}))
 
@@ -88,3 +94,7 @@ class ConstanceForm(forms.Form):
 	class Meta:
 		constance = config
 		constance_values = settings.CONSTANCE_CONFIG
+
+class DateForm(forms.Form):
+	inicio = forms.DateField(widget=Html5DateInput, required = True)
+	fin = forms.DateField(widget=Html5DateInput, required = True)

@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, register_converter
 from django.contrib.auth.views import LoginView, logout_then_login, PasswordResetView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
+from datetime import datetime
 from .views import *
 
 from rest_framework import routers
@@ -28,6 +29,18 @@ router = routers.DefaultRouter()
 
 router.register(r'user', UserViewSet)
 router.register(r'metricas', MetricasViewSet)
+
+class DateConverter:
+    regex = '\d{4}-\d{1,2}-\d{1,2}'
+    format = '%Y-%m-%d'
+
+    def to_python(self, value):
+        return datetime.strptime(value, self.format).date()
+
+    def to_url(self, value):
+        return value.strftime(self.format)
+
+register_converter(DateConverter, 'date')
 
 urlpatterns = [
     path('', login_required(main), name='main'),
@@ -45,5 +58,8 @@ urlpatterns = [
 
     path('metricasinlineview/<int:pk>/', login_required(metricas_inline_view), name='metricas_inline'),
     path('rest/',include(router.urls)),
-    path('rest/fingerprint/',FigerPrintViewSet.as_view(), name='figerprint')
+    path('rest/fingerprint/',FigerPrintViewSet.as_view(), name='figerprint'),
+
+    path('dateplanillas/<int:pk>', login_required(PlanillaDataView.as_view()), name='date_planillas'),
+    path('planilladetail/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetail.as_view()), name='planilla_detail')
 ]

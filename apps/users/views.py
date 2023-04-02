@@ -1,10 +1,13 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.db.models import CharField
 from django.db.models.functions import Cast
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
+from django.db.models import Prefetch
+from django.db.models import Q
+from datetime import datetime, time
 from .forms import *
 
 # Create your views here.
@@ -61,6 +64,9 @@ class ConstanceView(FormView):
 	template_name = 'constance.html'
 	form_class = ConstanceForm
 	success_url = '/'
+	def form_valid(self, form):
+		form.save()
+		return super().form_valid(form)
 
 def metricas_inline_view(request, pk):
 	instance = get_object_or_404(User, id=pk)
@@ -78,3 +84,35 @@ def metricas_inline_view(request, pk):
 	else:
 		formset = fom_inline(instance=instance)
 	return render(request, 'metricas.html',{'formset':formset, 'helper':helper, 'instance':instance})
+
+class PlanillaDataView(FormView):
+	form_class = DateForm
+	template_name = 'planillas/planilla_date.html'
+	success_url = 'users:planilla_detail'
+	def form_valid(self, form):
+		return HttpResponseRedirect(reverse_lazy(self.success_url, kwargs={'pk':self.kwargs['pk'],'fini':(form.cleaned_data['inicio']), 'ffin':(form.cleaned_data['fin'])}))
+
+class PlanillaDetail(DetailView):
+	model = User
+	template_name = 'planillas/planilla_detail.html'
+	def get_object(self, query=None):
+		asd1 = datetime.strptime('8:0:0', '%H:%M:%S').time()
+		asd2 = datetime.strptime('8:20:0', '%H:%M:%S').time()
+		
+		asd3 = datetime.strptime('12:0:0', '%H:%M:%S').time()
+		asd4 = datetime.strptime('13:30:0', '%H:%M:%S').time()
+		
+		asd5 = datetime.strptime('14:0:0', '%H:%M:%S').time()
+		asd6 = datetime.strptime('14:20:0', '%H:%M:%S').time()
+
+		asd7 = datetime.strptime('18:0:0', '%H:%M:%S').time()
+		asd8 = datetime.strptime('23:0:0', '%H:%M:%S').time()
+		return self.model.objects.prefetch_related(
+			Prefetch('tiqueo_set', Tiqueo.objects.filter(
+				Q(fecha__time__range=(asd1,asd2))|
+				Q(fecha__time__range=(asd3,asd4))|
+				Q(fecha__time__range=(asd5,asd6))|
+				Q(fecha__time__range=(asd7,asd8)),
+				fecha__range=(self.kwargs['fini'],self.kwargs['ffin'])
+			).order_by('fecha'))
+		).get(id=self.kwargs['pk'])
