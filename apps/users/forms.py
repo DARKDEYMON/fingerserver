@@ -6,6 +6,7 @@ from crispy_forms.layout import Layout, Submit, Row, Column, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from constance import config
 from django.conf import settings
+from datetime import time
 from .models import *
 
 class Html5DateInput(forms.DateInput):
@@ -83,6 +84,8 @@ class ConstanceForm(forms.Form):
 				self.fields[key] = forms.IntegerField(label=data[1], required=True, initial=getattr(self.Meta.constance,key))
 			elif(typo==float):
 				self.fields[key] = forms.FloatField(label=data[1], required=True, initial=getattr(self.Meta.constance,key))
+			elif(typo==time):
+				self.fields[key] = forms.TimeField(widget=forms.TimeInput(format='%H:%M:%S'), label=data[1], required=True, initial=getattr(self.Meta.constance,key))
 	def getDataOrNone(self, data, index):
 		try:
 			return data[index]

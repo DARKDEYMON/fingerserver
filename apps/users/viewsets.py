@@ -62,4 +62,4 @@ class FigerPrintViewSet(APIView):
 			serializer = UserSerializer(user)
 			print(serializer.data)
 			return Response(serializer.data)
-		return Response({"user":None})
+		return Response({})

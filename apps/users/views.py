@@ -6,8 +6,9 @@ from django.db.models.functions import Cast
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.db.models import Prefetch
-from django.db.models import Q
-from datetime import datetime, time
+from django.db.models import Q, Case, When, Value, F
+from datetime import datetime, time, timedelta
+from constance import config
 from .forms import *
 
 # Create your views here.
@@ -96,23 +97,43 @@ class PlanillaDetail(DetailView):
 	model = User
 	template_name = 'planillas/planilla_detail.html'
 	def get_object(self, query=None):
-		asd1 = datetime.strptime('8:0:0', '%H:%M:%S').time()
-		asd2 = datetime.strptime('8:20:0', '%H:%M:%S').time()
-		
-		asd3 = datetime.strptime('12:0:0', '%H:%M:%S').time()
-		asd4 = datetime.strptime('13:30:0', '%H:%M:%S').time()
-		
-		asd5 = datetime.strptime('14:0:0', '%H:%M:%S').time()
-		asd6 = datetime.strptime('14:20:0', '%H:%M:%S').time()
+		asd1 = config.ENTRADA_M_I #datetime.strptime('8:0:0', '%H:%M:%S').time()
+		asd2 = config.ENTRADA_M_M #datetime.strptime('8:20:0', '%H:%M:%S').time()
 
-		asd7 = datetime.strptime('18:0:0', '%H:%M:%S').time()
-		asd8 = datetime.strptime('23:0:0', '%H:%M:%S').time()
+		asd3 = config.SALIDA_M_I #datetime.strptime('12:0:0', '%H:%M:%S').time()
+		asd4 = config.SALIDA_M_M #datetime.strptime('13:30:0', '%H:%M:%S').time()
+		
+		asd5 = config.ENTRADA_T_I #datetime.strptime('14:0:0', '%H:%M:%S').time()
+		asd6 = config.ENTRADA_T_M #datetime.strptime('14:20:0', '%H:%M:%S').time()
+
+		asd7 = config.SALIDA_T_I #datetime.strptime('18:0:0', '%H:%M:%S').time()
+		asd8 = config.SALIDA_T_M #datetime.strptime('23:0:0', '%H:%M:%S').time()
+
+		late = timedelta(minutes=10)
+		#import pdb; pdb.set_trace()
+		print((datetime.combine(datetime(1,1,1),asd2) - late).time())
+		print(asd2)
 		return self.model.objects.prefetch_related(
-			Prefetch('tiqueo_set', Tiqueo.objects.filter(
-				Q(fecha__time__range=(asd1,asd2))|
-				Q(fecha__time__range=(asd3,asd4))|
-				Q(fecha__time__range=(asd5,asd6))|
-				Q(fecha__time__range=(asd7,asd8)),
-				fecha__range=(self.kwargs['fini'],self.kwargs['ffin'])
-			).order_by('fecha'))
+			Prefetch('tiqueo_set',
+				Tiqueo.objects.filter(
+					Q(fecha__time__range=(asd1,asd2))|
+					Q(fecha__time__range=(asd3,asd4))|
+					Q(fecha__time__range=(asd5,asd6))|
+					Q(fecha__time__range=(asd7,asd8)),
+					fecha__range=(self.kwargs['fini'],self.kwargs['ffin'])
+				).annotate(
+					minutos_tarde_m= Case(
+						When(
+							Q(fecha__time__gte=(datetime.combine(datetime(1,1,1),asd2) - late).time(), fecha__time__lt=asd2), 
+							then=(datetime.combine(datetime(1,1,1),asd2) - late).time().minute - F('fecha__time__minute')
+						)
+					),
+					minutos_tarde_t= Case(
+						When(
+							Q(fecha__time__gte=(datetime.combine(datetime(1,1,1),asd6) - late).time(), fecha__time__lt=asd6),
+							then=(datetime.combine(datetime(1,1,1),asd6) - late).time().minute - F('fecha__time__minute')
+						)
+					),
+				).order_by('fecha')
+			)
 		).get(id=self.kwargs['pk'])

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from django.urls import reverse_lazy
 from decouple import config
+from datetime import time
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -160,7 +161,16 @@ REST_FRAMEWORK = {
 
 CONSTANCE_CONFIG = {
     'UMBRAL_SIMILITUD': (0.7, 'Umbral de Similitud', float),
-    'CANTIDAD_COINCIDENCIAS': (100, 'Cantidad e coincidencias en la metrica', int)
+    'CANTIDAD_COINCIDENCIAS': (100, 'Cantidad e coincidencias en la metrica', int),
+    'ENTRADA_M_I': (time(7,30,0), 'ENTRADA MAÑANA INICIAL', time),
+    'ENTRADA_M_M': (time(8,20,0), 'ENTRADA MAÑANA MAXIMO', time),
+    'SALIDA_M_I': (time(12,0,0), 'ENTRADA MAÑANA INICIAL', time),
+    'SALIDA_M_M': (time(13,30,0), 'ENTRADA MAÑANA MAXIMO', time),
+
+    'ENTRADA_T_I': (time(13,31,0), 'ENTRADA TARDE INICIAL', time),
+    'ENTRADA_T_M': (time(14,20,0), 'ENTRADA TARDE MAXIMO', time),
+    'SALIDA_T_I': (time(18,0,0), 'ENTRADA TARDE INICIAL', time),
+    'SALIDA_T_M': (time(23,0,0), 'ENTRADA TARDE MAXIMO', time),
 }
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_SUPERUSER_ONLY = False
