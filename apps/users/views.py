@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.db.models import CharField
-from django.db.models.functions import Cast
+from django.db.models.functions import Cast, Extract
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.db.models import Prefetch
@@ -125,13 +125,13 @@ class PlanillaDetail(DetailView):
 					minutos_tarde_m= Case(
 						When(
 							Q(fecha__time__gte=(datetime.combine(datetime(1,1,1),asd2) - late).time(), fecha__time__lt=asd2), 
-							then=(datetime.combine(datetime(1,1,1),asd2) - late).time().minute - F('fecha__time__minute')
+							then=Extract(F('fecha__time') - (datetime.combine(datetime(1,1,1),asd2) - late).time(),'minute')
 						)
 					),
 					minutos_tarde_t= Case(
 						When(
 							Q(fecha__time__gte=(datetime.combine(datetime(1,1,1),asd6) - late).time(), fecha__time__lt=asd6),
-							then=(datetime.combine(datetime(1,1,1),asd6) - late).time().minute - F('fecha__time__minute')
+							then=Extract(F('fecha__time') - (datetime.combine(datetime(1,1,1),asd6) - late).time(),'minute')
 						)
 					),
 				).order_by('fecha')
