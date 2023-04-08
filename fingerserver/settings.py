@@ -161,7 +161,7 @@ REST_FRAMEWORK = {
 
 CONSTANCE_CONFIG = {
     'UMBRAL_SIMILITUD': (0.7, 'Umbral de Similitud', float),
-    'CANTIDAD_COINCIDENCIAS': (100, 'Cantidad e coincidencias en la metrica', int),
+    'CANTIDAD_COINCIDENCIAS': (50, 'Cantidad e coincidencias en la metrica', int),
     'ENTRADA_M_I': (time(7,30,0), 'ENTRADA MAÑANA INICIAL', time),
     'ENTRADA_M_M': (time(8,20,0), 'ENTRADA MAÑANA MAXIMO', time),
     'SALIDA_M_I': (time(12,0,0), 'ENTRADA MAÑANA INICIAL', time),
@@ -171,6 +171,7 @@ CONSTANCE_CONFIG = {
     'ENTRADA_T_M': (time(14,20,0), 'ENTRADA TARDE MAXIMO', time),
     'SALIDA_T_I': (time(18,0,0), 'ENTRADA TARDE INICIAL', time),
     'SALIDA_T_M': (time(23,0,0), 'ENTRADA TARDE MAXIMO', time),
+    'TOLERANCIA': (10, 'TOLERANCIA EN MINUTOS', int),
 }
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_SUPERUSER_ONLY = False

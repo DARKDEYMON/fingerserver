@@ -6,7 +6,7 @@ from django.db.models.functions import Cast, Extract
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.db.models import Prefetch
-from django.db.models import Q, Case, When, Value, F
+from django.db.models import Q, Case, When, Value, F, Subquery, OuterRef
 from datetime import datetime, time, timedelta
 from constance import config
 from .forms import *
@@ -109,17 +109,21 @@ class PlanillaDetail(DetailView):
 		asd7 = config.SALIDA_T_I #datetime.strptime('18:0:0', '%H:%M:%S').time()
 		asd8 = config.SALIDA_T_M #datetime.strptime('23:0:0', '%H:%M:%S').time()
 
-		late = timedelta(minutes=10)
+		late = timedelta(minutes=config.TOLERANCIA)
 		#import pdb; pdb.set_trace()
 		print((datetime.combine(datetime(1,1,1),asd2) - late).time())
 		print(asd2)
+		sub1 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd1,asd2), user__id=self.kwargs['pk']).values('id').order_by('fecha')[:1])
+		sub2 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd3,asd4), user__id=self.kwargs['pk']).values('id').order_by('-fecha')[:1])
+		sub3 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd5,asd6), user__id=self.kwargs['pk']).values('id').order_by('fecha')[:1])
+		sub4 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd7,asd8), user__id=self.kwargs['pk']).values('id').order_by('-fecha')[:1])
 		return self.model.objects.prefetch_related(
 			Prefetch('tiqueo_set',
 				Tiqueo.objects.filter(
-					Q(fecha__time__range=(asd1,asd2))|
-					Q(fecha__time__range=(asd3,asd4))|
-					Q(fecha__time__range=(asd5,asd6))|
-					Q(fecha__time__range=(asd7,asd8)),
+					Q(id__in = [sub1])|
+					Q(id__in = [sub2])|
+					Q(id__in = [sub3])|
+					Q(id__in = [sub4]),
 					fecha__range=(self.kwargs['fini'],self.kwargs['ffin'])
 				).annotate(
 					minutos_tarde_m= Case(

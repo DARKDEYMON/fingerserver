@@ -172,7 +172,7 @@ def compare2():
 
 	# Determinar si las huellas dactilares corresponden a la misma persona en función del número de coincidencias encontradas
 	
-	if len(good_matches) > config.CANTIDAD_COINCIDENCIAS:
+	if len(good_matches) > 100:
 		print("Las huellas dactilares corresponden a la misma persona")
 	else:
 		print("Las huellas dactilares corresponden a personas diferentes")
@@ -203,7 +203,7 @@ def compareBytes2(img1, img2):
 
 	# Determinar si las huellas dactilares corresponden a la misma persona en función del número de coincidencias encontradas
 	
-	if len(good_matches) > 100:
+	if len(good_matches) > config.CANTIDAD_COINCIDENCIAS:
 		print("Las huellas dactilares corresponden a la misma persona: " + str(len(good_matches)))
 		return True
 	else:
