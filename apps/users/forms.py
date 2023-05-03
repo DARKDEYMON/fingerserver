@@ -110,3 +110,12 @@ class PermisosGeneralesForm(forms.ModelForm):
 			'fecha_inicio':Html5DateInput(),
 			'fecha_fin':Html5DateInput()
 		}
+
+class PermisosForm(forms.ModelForm):	
+	class Meta:
+		model = Permisos
+		exclude = ['user']
+		widgets = {
+			'fecha_inicio':Html5DateInput(),
+			'fecha_fin':Html5DateInput()
+		}

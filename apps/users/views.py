@@ -271,7 +271,7 @@ class PlanillaDetailHC(DetailView):
 class PlanillaDetailHCPDF(WeasyTemplateResponseMixin, PlanillaDetailHC):
 	pass
 
-class ListPermisosView(ListView):
+class ListPermisosGView(ListView):
 	model = PermisosGenerales
 	template_name = 'permisosg/list_permisosg.html'
 	form_class = search_form
@@ -307,13 +307,69 @@ class ListPermisosView(ListView):
 		else:
 			return self.model.objects.all().filter().order_by('id')
 
-class CreatePermisosView(CreateView):
+class CreatePermisosGView(CreateView):
 	form_class = PermisosGeneralesForm
 	template_name = 'permisosg/create_permisosg.html'
 	success_url = reverse_lazy('users:list_permisosg')
 
-class UpdatePermisosView(UpdateView):
+class UpdatePermisosGView(UpdateView):
 	model = PermisosGenerales
 	form_class = PermisosGeneralesForm
 	template_name = 'permisosg/update_permisosg.html'
 	success_url = reverse_lazy('users:list_permisosg')
+
+class ListPermisosView(ListView):
+	model = Permisos
+	template_name = 'permisos/list_permisos.html'
+	form_class = search_form
+	paginate_by = 10
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		if 'form' not in context:
+			context['form'] = self.form_class()
+		if self.request.GET:
+			context['form'] = self.form_class(self.request.GET)
+			form = self.form_class(self.request.GET)
+			if form.is_valid():
+				if form.cleaned_data['search']=='':
+					context['searchdata'] = None
+				else:
+					context['searchdata'] = form.cleaned_data['search']
+		return context
+	def get_queryset(self):
+		search = None
+		if self.request.method == "GET":
+			form = self.form_class(self.request.GET)
+			if form.is_valid():
+				search = form.cleaned_data['search']
+		if (search):
+			return self.model.objects.annotate(
+					search=SearchVector(
+						Cast('id', CharField()),
+						'motivo',
+					)
+				).filter(
+					user__id=self.kwargs['pk'],
+					search=search,
+				).order_by('id')
+		else:
+			return self.model.objects.filter(user__id=self.kwargs['pk']).order_by('id')
+
+
+class CreatePermisosView(CreateView):
+	form_class = PermisosForm
+	template_name = 'permisos/create_permisos.html'
+	success_url = 'users:list_permisos'
+	def form_valid(self, form):
+		form.instance.user = User.objects.get(id=self.kwargs['pk'])
+		return super().form_valid(form)
+	def get_success_url(self):
+		return reverse_lazy(self.success_url, kwargs={'pk': self.object.user_id})
+
+class UpdatePermisosView(UpdateView):
+	model = Permisos
+	form_class = PermisosForm
+	template_name = 'permisos/update_permisos.html'
+	success_url = 'users:list_permisos'
+	def get_success_url(self):
+		return reverse_lazy(self.success_url, kwargs={'pk': self.object.user_id})

@@ -66,7 +66,11 @@ urlpatterns = [
     path('dateplanillashc/<int:pk>', login_required(PlanillaDataHCView.as_view()), name='date_planillashc'),
     path('planilladetailhc/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetailHCPDF.as_view()), name='planilla_detailhc'),
 
-    path('listpermisosg/', login_required(ListPermisosView.as_view()), name='list_permisosg'),
-    path('createpermisog/', login_required(CreatePermisosView.as_view()), name='create_permisog'),
-    path('updatepermisog/<int:pk>/', login_required(UpdatePermisosView.as_view()), name='update_permisog')
+    path('listpermisosg/', login_required(ListPermisosGView.as_view()), name='list_permisosg'),
+    path('createpermisog/', login_required(CreatePermisosGView.as_view()), name='create_permisog'),
+    path('updatepermisog/<int:pk>/', login_required(UpdatePermisosGView.as_view()), name='update_permisog'),
+
+    path('listpermisos/<int:pk>/', login_required(ListPermisosView.as_view()), name='list_permisos'),
+    path('createpermisos/<int:pk>/', login_required(CreatePermisosView.as_view()), name='create_permisos'),
+    path('updatepermisos/<int:pk>/', login_required(UpdatePermisosView.as_view()), name='update_permisos'),
 ]
