@@ -164,14 +164,20 @@ CONSTANCE_CONFIG = {
     'CANTIDAD_COINCIDENCIAS': (50, 'Cantidad e coincidencias en la metrica', int),
     'ENTRADA_M_I': (time(7,30,0), 'ENTRADA MAÑANA INICIAL', time),
     'ENTRADA_M_M': (time(8,20,0), 'ENTRADA MAÑANA MAXIMO', time),
-    'SALIDA_M_I': (time(12,0,0), 'ENTRADA MAÑANA INICIAL', time),
-    'SALIDA_M_M': (time(13,30,0), 'ENTRADA MAÑANA MAXIMO', time),
+    'SALIDA_M_I': (time(12,0,0), 'SALIDA MAÑANA INICIAL', time),
+    'SALIDA_M_M': (time(13,30,0), 'SALIDA MAÑANA MAXIMO', time),
 
     'ENTRADA_T_I': (time(13,31,0), 'ENTRADA TARDE INICIAL', time),
     'ENTRADA_T_M': (time(14,20,0), 'ENTRADA TARDE MAXIMO', time),
-    'SALIDA_T_I': (time(18,0,0), 'ENTRADA TARDE INICIAL', time),
-    'SALIDA_T_M': (time(23,0,0), 'ENTRADA TARDE MAXIMO', time),
+    'SALIDA_T_I': (time(18,0,0), 'SALIDA TARDE INICIAL', time),
+    'SALIDA_T_M': (time(23,0,0), 'SALIDA TARDE MAXIMO', time),
     'TOLERANCIA': (10, 'TOLERANCIA EN MINUTOS', int),
+
+    'ENTRADA_HC_M_I': (time(7,30,0), 'ENTRADA HORARIO CONTINUO MAÑANA INICIAL', time),
+    'ENTRADA_HC_M_M': (time(8,20,0), 'ENTRADA HORARIO CONTINUO MAÑANA MAXIMO', time),
+
+    'SALIDA_HC_T_I': (time(16,0,0), 'SALIDA HORARIO CONTINUO TARDE INICIAL', time),
+    'SALIDA_HC_T_M': (time(22,0,0), 'SALIDA HORARIO CONTINUO TARDE MAXIMO', time),
 }
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_SUPERUSER_ONLY = False

@@ -50,7 +50,7 @@ class UpdateUserForm(forms.ModelForm):
 class MetricasForm(forms.ModelForm):
 	class Meta:
 		model = Metricas
-		exclude = ['user']
+		exclude = ['user','array']
 
 class MetricasHelperForm(FormHelper):
 	def __init__(self, *args, **kwargs):
@@ -101,3 +101,12 @@ class ConstanceForm(forms.Form):
 class DateForm(forms.Form):
 	inicio = forms.DateField(widget=Html5DateInput, required = True)
 	fin = forms.DateField(widget=Html5DateInput, required = True)
+
+class PermisosGeneralesForm(forms.ModelForm):	
+	class Meta:
+		model = PermisosGenerales
+		exclude = ['']
+		widgets = {
+			'fecha_inicio':Html5DateInput(),
+			'fecha_fin':Html5DateInput()
+		}

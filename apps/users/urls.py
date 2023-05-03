@@ -61,5 +61,12 @@ urlpatterns = [
     path('rest/fingerprint/',FigerPrintViewSet.as_view(), name='figerprint'),
 
     path('dateplanillas/<int:pk>', login_required(PlanillaDataView.as_view()), name='date_planillas'),
-    path('planilladetail/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetail.as_view()), name='planilla_detail')
+    path('planilladetail/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetailPDF.as_view()), name='planilla_detail'),
+  
+    path('dateplanillashc/<int:pk>', login_required(PlanillaDataHCView.as_view()), name='date_planillashc'),
+    path('planilladetailhc/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetailHCPDF.as_view()), name='planilla_detailhc'),
+
+    path('listpermisosg/', login_required(ListPermisosView.as_view()), name='list_permisosg'),
+    path('createpermisog/', login_required(CreatePermisosView.as_view()), name='create_permisog'),
+    path('updatepermisog/<int:pk>/', login_required(UpdatePermisosView.as_view()), name='update_permisog')
 ]

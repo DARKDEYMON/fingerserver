@@ -1,0 +1,120 @@
+{% load transformers %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<style type="text/css">
+		@page landscape {
+			size: letter landscape;
+			background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url("/static/logo.png") no-repeat;
+			background-attachment: fixed;
+			background-position: center center;
+			@top-right{
+				font-size: xx-small;
+				font-style: italic;
+				font-weight: bold;
+				content: "Fechas de {{ view.kwargs.fini|date:'Y/m/d'  }} a {{ view.kwargs.ffin|date:'Y/m/d'  }}";
+			}
+			@top-center {
+				background: #fbc847;
+				content: '';
+				display: block;
+				height: .05cm;
+				opacity: .5;
+				width: 100%;
+				margin: 1px;
+			}
+			@top-left{
+				font-size: xx-small;
+				font-style: italic;
+				font-weight: bold;
+				content: "Planilla de Asistencia";
+			}
+			@bottom-left {
+				font-size: xx-small;
+				content: "Página " counter(page) " de " counter(pages);
+				font-style: bold;
+			}
+		}
+		.landscape{
+			page: landscape;
+		}
+		.all-width{
+			width: 100%;
+		}
+
+		.table-border .border{
+			border: black 1px solid;
+			padding: 2px;
+		}
+		.table-border{
+			border-collapse: collapse;
+		}
+	</style>
+</head>
+<body>
+	<div class="landscape">
+		<table class="table-border all-width">
+			<tr>
+				<th class="border">Nombre:</th>
+				<th class="border">{{ object.query.first_name }} {{ object.query.last_name }}</th>
+			</tr>
+		</table>
+		<br>
+		<table class="table-border all-width">
+			<thead>
+				<tr>
+					<th class="border">Fecha</th>
+					<th class="border">E. Mañana</th>
+					<th class="border">S. Mañana</th>
+					<th class="border">E. Tarde</th>
+					<th class="border">S. Tarde</th>
+					<th class="border">Mañana M. Tarde</th>
+					<th class="border">Tarde M. Tarde</th>
+					<th class="border">Observación </th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for f in object.estado_final %}
+					<tr>
+						<td class="border">
+							{{ f.fecha }}
+						</td>
+							{% for t in f.tiqueo|tickeos_vacios %}
+								<td class="border">
+									{% if t %}
+										{{ t.fecha|date:'H:i:s' }} {{ t.tipo_entrada }}<br>
+									{% else %}
+										Falta
+									{% endif %}
+								</td>
+							{% endfor %}
+							
+						<td class="border">
+							{% for t in f.tiqueo %}
+								{% if t.minutos_tarde_m != 0 %}
+									{{ t.minutos_tarde_m }}
+								{% endif %}
+							{% endfor %}
+						</td>
+						<td class="border">
+							{% for t in f.tiqueo %}
+								{% if t.minutos_tarde_t != 0 %}
+									{{ t.minutos_tarde_t }}
+								{% endif %}
+							{% endfor %}
+						</td>
+						<td class="border">
+							{% if f.fecha.weekday == 5 or f.fecha.weekday == 6 %}
+								Fin de semana
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

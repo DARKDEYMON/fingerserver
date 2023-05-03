@@ -3,9 +3,47 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 import numpy as np
 from .fingermodule import *
+from django.contrib.postgres.fields import ArrayField
 import cv2
+import json
+import pickle
 
 # Create your models here.
+
+class PermisosGenerales(models.Model):
+	motivo = models.CharField(
+		max_length=1000,
+		blank = False,
+		null = False
+	)
+	fecha_inicio = models.DateField(
+		blank = False,
+		null = False
+	)
+	fecha_fin = models.DateField(
+		blank = False,
+		null = False
+	)
+	def __str__(self):
+		return self.motivo
+
+class Permisos(models.Model):
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+	motivo = models.CharField(
+		max_length=1000,
+		blank = False,
+		null = False
+	)
+	fecha_inicio = models.DateField(
+		blank = False,
+		null = False
+	)
+	fecha_fin = models.DateField(
+		blank = False,
+		null = False
+	)
+	def __str__(self):
+		return str(self.user)
 
 class Metricas(models.Model):
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
@@ -14,6 +52,21 @@ class Metricas(models.Model):
 		null=False,
 		blank=False
 	)
+	binary = models.BinaryField(
+		verbose_name='Array',
+		null=True,
+		blank=True,
+	)
+	def binary_decode(self):
+		return pickle.loads(self.binary)
+	def save(self, *args, **kwargs):
+		detector = cv2.SIFT_create()
+		read = self.imagen.read()
+		image = readBytesCV2(read)
+		keypoints1, descriptors1 = detector.detectAndCompute(image, None)
+		#print(str(descriptors1))
+		self.binary = pickle.dumps(descriptors1)
+		return super().save(*args, **kwargs)
 	"""
 	def save(self, *args, **kwargs):
 		read = self.imagen.read()
@@ -40,4 +93,4 @@ class Tiqueo(models.Model):
 		null = False
 	)
 	def __str__(self):
-		return str(self.user)
+		return str(self.user) + ' ' + str(self.fecha)
