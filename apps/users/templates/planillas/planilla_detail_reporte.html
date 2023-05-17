@@ -52,6 +52,12 @@
 		.table-border{
 			border-collapse: collapse;
 		}
+		.feriado{
+			background: #35EC23;
+		}
+		.finsemana{
+			background: #FE814A;
+		}
 	</style>
 </head>
 <body>
@@ -71,14 +77,18 @@
 					<th class="border">S. Mañana</th>
 					<th class="border">E. Tarde</th>
 					<th class="border">S. Tarde</th>
-					<th class="border">Mañana M. Tarde</th>
-					<th class="border">Tarde M. Tarde</th>
+					<th class="border">Mañana A</th>
+					<th class="border">Tarde A</th>
+					<th class="border">Mañana M.T</th>
+					<th class="border">Tarde M.T.</th>
 					<th class="border">Observación </th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for f in object.estado_final %}
-					<tr>
+					{% feriado f.fecha as feri %}
+					{% fin_semana f.fecha as fsemana %}
+					<tr class="{% if feri %}feriado{% endif %}{% if fsemana %}finsemana{% endif %}">
 						<td class="border">
 							{{ f.fecha }}
 						</td>
@@ -91,7 +101,12 @@
 									{% endif %}
 								</td>
 							{% endfor %}
-							
+						<td class="border">
+							{{f.t1}}
+						</td>
+						<td class="border">
+							{{f.t2}}
+						</td>
 						<td class="border">
 							{% for t in f.tiqueo %}
 								{% if t.minutos_tarde_m != 0 %}
@@ -107,8 +122,11 @@
 							{% endfor %}
 						</td>
 						<td class="border">
-							{% if f.fecha.weekday == 5 or f.fecha.weekday == 6 %}
+							{% if fsemana %}
 								Fin de semana
+							{% endif %}
+							{% if feri %}
+								{{ feri }}
 							{% endif %}
 						</td>
 					</tr>

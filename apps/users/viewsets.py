@@ -55,7 +55,7 @@ class FigerPrintViewSet(APIView):
 			return Response(serializer.data)
 		return Response({"user":None})
 		"""
-		res = compareLote(metrica, self.model_metricas.objects.all())
+		res = compareLote1(metrica, self.model_metricas.objects.all().order_by('?'))
 		if(res):
 			user = res.user
 			self.tickeo.objects.create(user=user)

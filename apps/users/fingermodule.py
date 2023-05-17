@@ -189,7 +189,7 @@ def compareBytes2(img1, img2):
 	keypoints2, descriptors2 = detector.detectAndCompute(img2, None)
 
 	# Establecer el umbral de similitud para determinar si las huellas dactilares son de la misma persona
-	umbral_similitud = 0.7
+	umbral_similitud = config.UMBRAL_SIMILITUD
 
 	# Utilizar el algoritmo de coincidencia de fuerza bruta de OpenCV para comparar las características de ambas huellas dactilares
 	matcher = cv2.BFMatcher()
@@ -214,5 +214,36 @@ def compareLote(metrica, metricas):
 	metrica_image = readBytesCV2(metrica)
 	for m in metricas:
 		if(compareBytes2(metrica_image, cv2.imread(m.imagen.path, 0))):
+			return m
+	return None
+
+def compareBytes3(descriptors1, descriptors2):
+	# Establecer el umbral de similitud para determinar si las huellas dactilares son de la misma persona
+	umbral_similitud = config.UMBRAL_SIMILITUD
+
+	# Utilizar el algoritmo de coincidencia de fuerza bruta de OpenCV para comparar las características de ambas huellas dactilares
+	matcher = cv2.BFMatcher()
+	matches = matcher.knnMatch(descriptors1, descriptors2, k=2)
+
+	# Filtrar las coincidencias por similitud
+	good_matches = []
+	for m, n in matches:
+		if m.distance < umbral_similitud * n.distance:
+			good_matches.append(m)
+
+	# Determinar si las huellas dactilares corresponden a la misma persona en función del número de coincidencias encontradas
+	
+	if len(good_matches) > config.CANTIDAD_COINCIDENCIAS:
+		print("Las huellas dactilares corresponden a la misma persona: " + str(len(good_matches)))
+		return True
+	else:
+		print("Las huellas dactilares corresponden a personas diferentes "+ str(len(good_matches)))
+		return False
+
+def compareLote1(metrica, metricas):
+	detector = cv2.SIFT_create()
+	keypoints1, descriptors1 = detector.detectAndCompute(readBytesCV2(metrica), None)
+	for m in metricas:
+		if(compareBytes3(descriptors1, m.binary_decode)):
 			return m
 	return None

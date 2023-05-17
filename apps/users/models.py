@@ -24,6 +24,12 @@ class PermisosGenerales(models.Model):
 		blank = False,
 		null = False
 	)
+	def verificar(self, date):
+		if(self.fecha_inicio == self.fecha_fin and self.data==self.fecha_inicio):
+			return True
+		elif(self.fecha_inicio<date<self.fecha_fin):
+			return True
+		return False
 	def __str__(self):
 		return self.motivo
 
@@ -42,6 +48,12 @@ class Permisos(models.Model):
 		blank = False,
 		null = False
 	)
+	def verificar(self, date):
+		if(self.fecha_inicio == self.fecha_fin and self.data==self.fecha_inicio):
+			return True
+		elif(self.fecha_inicio<date<self.fecha_fin):
+			return True
+		return False
 	def __str__(self):
 		return str(self.user)
 
@@ -57,6 +69,7 @@ class Metricas(models.Model):
 		null=True,
 		blank=True,
 	)
+	@property
 	def binary_decode(self):
 		return pickle.loads(self.binary)
 	def save(self, *args, **kwargs):

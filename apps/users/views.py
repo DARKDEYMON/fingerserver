@@ -113,8 +113,8 @@ class PlanillaDetail(DetailView):
 
 		late = timedelta(minutes=config.TOLERANCIA)
 		#import pdb; pdb.set_trace()
-		print((datetime.combine(datetime(1,1,1),asd2) - late).time())
-		print(asd2)
+		#print((datetime.combine(datetime(1,1,1),asd2) - late).time())
+		#print(asd2)
 		sub1 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd1,asd2), user__id=self.kwargs['pk']).values('id').order_by('fecha')[:1])
 		sub2 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd3,asd4), user__id=self.kwargs['pk']).values('id').order_by('-fecha')[:1])
 		sub3 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd5,asd6), user__id=self.kwargs['pk']).values('id').order_by('fecha')[:1])
@@ -160,6 +160,22 @@ class PlanillaDetail(DetailView):
 							then=Value(4),
 						)
 					),
+					
+					#t1= Case(
+					#	When(
+					#		Q(id__in=[sub1])& Q(id__in = [sub2]),
+					#		then=Value(True),
+					#	),
+					#	default=Value(False)
+					#),
+					#t2= Case(
+					#	When(
+					#		Q(id__in = [sub3]) & Q(id__in = [sub4]),
+					#		then=Value(True),
+					#	),
+					#	default=Value(False)
+					#),
+
 				).order_by('fecha')
 			)
 		).get(id=self.kwargs['pk'])
@@ -177,6 +193,9 @@ class PlanillaDetail(DetailView):
 		for d in dates:
 			dictc = {}
 			res = [t for t in tiqueo if t.fecha.astimezone(get_current_timezone()).date() == d]
+			tipos = []
+			for r in res:
+				tipos.append(r.tipo_entrada)
 			"""
 			if res:
 				print(d, res)
@@ -185,6 +204,10 @@ class PlanillaDetail(DetailView):
 			"""
 			dictc['fecha']= d
 			dictc['tiqueo'] = res
+			dictc['t1'] = set([1,2]).issubset(set(tipos))
+			dictc['t2'] = set([3,4]).issubset(set(tipos))
+			#import pdb; pdb.set_trace()
+			print(dictc)
 			estado_final.append(dictc)
 		#print(estado_final)
 		return {'query': query, 'estado_final': estado_final}
@@ -211,8 +234,8 @@ class PlanillaDetailHC(DetailView):
 
 		late = timedelta(minutes=config.TOLERANCIA)
 		#import pdb; pdb.set_trace()
-		print((datetime.combine(datetime(1,1,1),asd2) - late).time())
-		print(asd2)
+		#print((datetime.combine(datetime(1,1,1),asd2) - late).time())
+		#print(asd2)
 		sub1 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd1,asd2), user__id=self.kwargs['pk']).values('id').order_by('fecha')[:1])
 		sub2 = Subquery(Tiqueo.objects.filter(fecha__date=OuterRef('fecha__date'),fecha__time__range=(asd3,asd4), user__id=self.kwargs['pk']).values('id').order_by('-fecha')[:1])
 		query = self.model.objects.prefetch_related(
@@ -244,7 +267,7 @@ class PlanillaDetailHC(DetailView):
 		).get(id=self.kwargs['pk'])
 
 		tiqueo = query.tiqueo_set.all()
-		print(tiqueo)
+		#print(tiqueo)
 
 		dates = []
 		days = (self.kwargs['ffin'] - self.kwargs['fini']).days + 1
