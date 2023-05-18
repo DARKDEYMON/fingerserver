@@ -209,8 +209,16 @@ class PlanillaDetail(DetailView):
 			#import pdb; pdb.set_trace()
 			print(dictc)
 			estado_final.append(dictc)
+
+		horas = 0
+		for hh in estado_final:
+			#import pdb; pdb.set_trace()
+			if(hh['t1'] and hh['t2']):
+				horas=horas+8
+			elif(hh['t1'] or hh['t2']):
+				horas=horas+4
 		#print(estado_final)
-		return {'query': query, 'estado_final': estado_final}
+		return {'query': query, 'estado_final': estado_final, 'horas':horas}
 
 class PlanillaDetailPDF(WeasyTemplateResponseMixin, PlanillaDetail):
 	pass

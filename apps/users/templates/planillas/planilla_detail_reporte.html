@@ -58,6 +58,9 @@
 		.finsemana{
 			background: #FE814A;
 		}
+		.permiso{
+			background: #E8E337;
+		}
 	</style>
 </head>
 <body>
@@ -66,6 +69,10 @@
 			<tr>
 				<th class="border">Nombre:</th>
 				<th class="border">{{ object.query.first_name }} {{ object.query.last_name }}</th>
+			</tr>
+			<tr>
+				<th class="border">Horas</th>
+				<th class="border">{{ object.horas }}</th>
 			</tr>
 		</table>
 		<br>
@@ -88,7 +95,10 @@
 				{% for f in object.estado_final %}
 					{% feriado f.fecha as feri %}
 					{% fin_semana f.fecha as fsemana %}
-					<tr class="{% if feri %}feriado{% endif %}{% if fsemana %}finsemana{% endif %}">
+					{% permiso f as perm %}
+					{% permiso_personal object.query f as pperm %}
+
+					<tr class="{% if feri %}feriado{% endif %} {% if fsemana %}finsemana{% endif %} {% if perm or pperm %}permiso{% endif %}">
 						<td class="border">
 							{{ f.fecha }}
 						</td>
@@ -127,6 +137,12 @@
 							{% endif %}
 							{% if feri %}
 								{{ feri }}
+							{% endif %}
+							{% if perm %}
+								{{ perm }}
+							{% endif %}
+							{% if pperm %}
+								{{ pperm }}
 							{% endif %}
 						</td>
 					</tr>

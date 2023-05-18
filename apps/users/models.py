@@ -25,11 +25,13 @@ class PermisosGenerales(models.Model):
 		null = False
 	)
 	def verificar(self, date):
-		if(self.fecha_inicio == self.fecha_fin and self.data==self.fecha_inicio):
-			return True
-		elif(self.fecha_inicio<date<self.fecha_fin):
-			return True
-		return False
+		res = PermisosGenerales.objects.all()
+		for r in res:
+			if(r.fecha_inicio == r.fecha_fin and date==r.fecha_inicio):
+				return r
+			elif(r.fecha_inicio<date<r.fecha_fin):
+				return r
+			return None
 	def __str__(self):
 		return self.motivo
 

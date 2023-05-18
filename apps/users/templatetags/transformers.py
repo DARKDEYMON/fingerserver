@@ -1,5 +1,6 @@
 from django import template
 import holidays
+from apps.users.models import *
 
 register = template.Library()
 
@@ -44,4 +45,26 @@ def fin_semana(date):
 	if(date.weekday() == 5 or date.weekday() == 6):
 		return True
 	else:
+		return None
+
+@register.simple_tag
+def permiso(date):
+	res = PermisosGenerales.objects.all()
+	#import pdb; pdb.set_trace()
+	for r in res:
+		if(r.fecha_inicio == r.fecha_fin and date['fecha']==r.fecha_inicio):
+			return r
+		elif(r.fecha_inicio<date['fecha']<r.fecha_fin):
+			return r
+		return None
+
+@register.simple_tag
+def permiso_personal(user, date):
+	res = Permisos.objects.filter(user=user)
+	#import pdb; pdb.set_trace()
+	for r in res:
+		if(r.fecha_inicio == r.fecha_fin and date['fecha']==r.fecha_inicio):
+			return r
+		elif(r.fecha_inicio<date['fecha']<r.fecha_fin):
+			return r
 		return None
