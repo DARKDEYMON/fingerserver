@@ -1,0 +1,96 @@
+{% load transformers %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<style type="text/css">
+		@page portrait {
+			size: letter portrait;
+			background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url("/static/logo.png") no-repeat;
+			background-attachment: fixed;
+			background-position: center center;
+			@top-right{
+				font-size: xx-small;
+				font-style: italic;
+				font-weight: bold;
+				content: "Fechas de {{ view.kwargs.fini|date:'Y/m/d'  }} a {{ view.kwargs.ffin|date:'Y/m/d'  }}";
+			}
+			@top-center {
+				background: #fbc847;
+				content: '';
+				display: block;
+				height: .05cm;
+				opacity: .5;
+				width: 100%;
+				margin: 1px;
+			}
+			@top-left{
+				font-size: xx-small;
+				font-style: italic;
+				font-weight: bold;
+				content: "Planilla de Asistencia";
+			}
+			@bottom-left {
+				font-size: xx-small;
+				content: "Página " counter(page) " de " counter(pages);
+				font-style: bold;
+			}
+		}
+		.portrait{
+			page: portrait;
+		}
+		.all-width{
+			width: 100%;
+		}
+
+		.table-border .border{
+			border: black 1px solid;
+			padding: 2px;
+		}
+		.table-border{
+			border-collapse: collapse;
+		}
+		.align-center{
+			margin-left:auto;
+			margin-right:auto;
+		}
+		.text-center{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="portrait">
+		<h2 class="text-center">Contrato</h2>
+
+		
+		{% if object.indefinido %}
+			<h4>Contrato indefinido</h4>
+		{% else %}
+			<h4>Contrato a plazo fijo</h4>
+		{% endif %}
+		<p>
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		</p>
+
+		<table class="align-center">
+			<tr>
+				<td class="text-center">
+					<br>
+					<br>
+					{{ object.first_name }} {{ object.last_name }}<br>
+
+					{{ object.kardex.ci }}
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

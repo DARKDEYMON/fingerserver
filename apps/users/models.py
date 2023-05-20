@@ -10,6 +10,29 @@ import pickle
 
 # Create your models here.
 
+class Kardex(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	ci = models.CharField(
+		max_length=50
+	)
+	hoja_vida = models.TextField(
+		verbose_name='Hoja de vida',
+	)
+	recorrido = models.TextField(
+		verbose_name='Hoja de recorrido',
+	)
+	ubicacion_actual = models.CharField(
+		max_length=5000,
+		blank = False,
+		null = False
+	)
+	class Meta:
+		permissions = (
+			("users", "Modulo de Personal"),
+		) 
+	def __str__(self):
+		return str(self.user)
+
 class PermisosGenerales(models.Model):
 	motivo = models.CharField(
 		max_length=1000,

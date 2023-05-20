@@ -52,25 +52,33 @@ urlpatterns = [
         logout_then_login,
         name='logout'
     ),
-    path('createuser/', login_required(CreateUserView.as_view()), name='create_user'),
-    path('listuser/', login_required(ListUserView.as_view()), name='list_user'),
-    path('constance/', login_required(ConstanceView.as_view()), name='constance'),
+    path('createuser/', permission_required('users.users')(login_required(CreateUserView.as_view())), name='create_user'),
+    path('listuser/', permission_required('users.users')(login_required(ListUserView.as_view())), name='list_user'),
+    path('permisossistema/<int:pk>/', permission_required('users.users')(login_required(PermisosSistemaView.as_view())), name='permisos_sistema'),
+    path('updateuser/<int:pk>/', permission_required('users.users')(login_required(UpdateUserView.as_view())), name='update_user'),
+    path('constance/', permission_required('users.users')(login_required(ConstanceView.as_view())), name='constance'),
+
+    path('createkardex/<int:pk>/', permission_required('users.users')(login_required(CreateKardexView.as_view())), name='create_kardex'),
+    path('updatekardex/<int:pk>/', permission_required('users.users')(login_required(UpdateKardexView.as_view())), name='update_kardex'),
+    path('create_or_update_kardex/<int:pk>/', permission_required('users.users')(login_required(create_or_update_kardex)), name='create_or_update_kardex'),
 
     path('metricasinlineview/<int:pk>/', login_required(metricas_inline_view), name='metricas_inline'),
     path('rest/',include(router.urls)),
     path('rest/fingerprint/',FigerPrintViewSet.as_view(), name='figerprint'),
 
-    path('dateplanillas/<int:pk>', login_required(PlanillaDataView.as_view()), name='date_planillas'),
-    path('planilladetail/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetailPDF.as_view()), name='planilla_detail'),
+    path('dateplanillas/<int:pk>', permission_required('users.users')(login_required(PlanillaDataView.as_view())), name='date_planillas'),
+    path('planilladetail/<int:pk>/<date:fini>/<date:ffin>/', permission_required('users.users')(login_required(PlanillaDetailPDF.as_view())), name='planilla_detail'),
   
-    path('dateplanillashc/<int:pk>', login_required(PlanillaDataHCView.as_view()), name='date_planillashc'),
-    path('planilladetailhc/<int:pk>/<date:fini>/<date:ffin>/', login_required(PlanillaDetailHCPDF.as_view()), name='planilla_detailhc'),
+    path('dateplanillashc/<int:pk>',permission_required('users.users')( login_required(PlanillaDataHCView.as_view())), name='date_planillashc'),
+    path('planilladetailhc/<int:pk>/<date:fini>/<date:ffin>/', permission_required('users.users')(login_required(PlanillaDetailHCPDF.as_view())), name='planilla_detailhc'),
 
-    path('listpermisosg/', login_required(ListPermisosGView.as_view()), name='list_permisosg'),
-    path('createpermisog/', login_required(CreatePermisosGView.as_view()), name='create_permisog'),
-    path('updatepermisog/<int:pk>/', login_required(UpdatePermisosGView.as_view()), name='update_permisog'),
+    path('listpermisosg/', permission_required('users.users')(login_required(ListPermisosGView.as_view())), name='list_permisosg'),
+    path('createpermisog/', permission_required('users.users')(login_required(CreatePermisosGView.as_view())), name='create_permisog'),
+    path('updatepermisog/<int:pk>/', (login_required(UpdatePermisosGView.as_view())), name='update_permisog'),
 
-    path('listpermisos/<int:pk>/', login_required(ListPermisosView.as_view()), name='list_permisos'),
-    path('createpermisos/<int:pk>/', login_required(CreatePermisosView.as_view()), name='create_permisos'),
-    path('updatepermisos/<int:pk>/', login_required(UpdatePermisosView.as_view()), name='update_permisos'),
+    path('listpermisos/<int:pk>/', permission_required('users.users')(login_required(ListPermisosView.as_view())), name='list_permisos'),
+    path('createpermisos/<int:pk>/', permission_required('users.users')(login_required(CreatePermisosView.as_view())), name='create_permisos'),
+    path('updatepermisos/<int:pk>/', permission_required('users.users')(login_required(UpdatePermisosView.as_view())), name='update_permisos'),
+
+    path('contrato/<int:pk>/', permission_required('users.users')(login_required(ContratoPDF.as_view())), name='contrato'),
 ]

@@ -18,9 +18,38 @@ from .forms import *
 def main(request):
 	return render(request,'main.html',{})
 
+class CreateKardexView(CreateView):
+	form_class = KardexForm
+	template_name = 'auth/kardex.html'
+	success_url = reverse_lazy('users:list_user')
+	def form_valid(self, form):
+		form.instance.user = User.objects.get(id=self.kwargs['pk'])
+		return super().form_valid(form)
+
+class UpdateKardexView(UpdateView):
+	model = Kardex
+	form_class = KardexForm
+	template_name = 'auth/kardex.html'
+	success_url = reverse_lazy('users:list_user')
+
+def create_or_update_kardex(request, pk):
+	user = User.objects.get(id=pk)
+	#import pdb; pdb.set_trace()
+	try:
+		user.kardex
+		return HttpResponseRedirect(reverse_lazy('users:update_kardex', kwargs={'pk':user.kardex.pk}))
+	except Exception as e:
+		return HttpResponseRedirect(reverse_lazy('users:create_kardex', kwargs={'pk':pk}))
+
 class CreateUserView(CreateView):
 	form_class = CreateUserForm
 	template_name = 'auth/create_user.html'
+	success_url = reverse_lazy('users:list_user')
+
+class UpdateUserView(UpdateView):
+	model = User
+	form_class = UpdateUserForm
+	template_name = 'auth/update_user.html'
 	success_url = reverse_lazy('users:list_user')
 
 class ListUserView(ListView):
@@ -404,3 +433,43 @@ class UpdatePermisosView(UpdateView):
 	success_url = 'users:list_permisos'
 	def get_success_url(self):
 		return reverse_lazy(self.success_url, kwargs={'pk': self.object.user_id})
+
+class PermisosSistemaView(FormView):
+	model = User
+	model_permissions = Kardex
+	form_class = AddPermissionsForm
+	template_name = 'permisos_sistema.html'
+	success_url = reverse_lazy('users:list_user')
+	def get_form_kwargs(self):
+		kwargs = super().get_form_kwargs()
+		kwargs['model_permissions'] = self.model_permissions
+		return kwargs
+	def get_initial(self):
+		pk = self.kwargs.get('pk',0)
+		self.user = self.model.objects.get(id=pk)
+		self.object = self.user
+		content_type = ContentType.objects.get_for_model(self.model_permissions)
+		permisos_actuales = self.user.user_permissions.filter(content_type=content_type)
+		perms = {}
+		for p in permisos_actuales:
+			perms[p.codename] = True
+		return perms
+		#return { 'usuarios': True, 'academico': False }
+	def form_valid(self, form):
+		if form.is_valid():
+			data = form.cleaned_data
+			for p in data:
+				content_type=ContentType.objects.get_for_model(self.model_permissions)
+				permission = Permission.objects.get(content_type=content_type, codename=p)
+				if data[p]:
+					self.user.user_permissions.add(permission)
+				else:
+					self.user.user_permissions.remove(permission)
+		return super().form_valid(form)
+
+class ContratoUser(DetailView):
+	model = User
+	template_name = 'contrato.html'
+
+class ContratoPDF(WeasyTemplateResponseMixin, ContratoUser):
+	pass

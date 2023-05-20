@@ -58,8 +58,9 @@ class FigerPrintViewSet(APIView):
 		res = compareLote1(metrica, self.model_metricas.objects.all().order_by('?'))
 		if(res):
 			user = res.user
-			self.tickeo.objects.create(user=user)
-			serializer = UserSerializer(user)
-			print(serializer.data)
-			return Response(serializer.data)
+			if(user.is_active):
+				self.tickeo.objects.create(user=user)
+				serializer = UserSerializer(user)
+				print(serializer.data)
+				return Response(serializer.data)
 		return Response({})

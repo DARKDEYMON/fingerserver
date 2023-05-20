@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'constance',
     'constance.backends.database',
     'apps.users',
+    'apps.empleado'
 ]
 
 MIDDLEWARE = [
