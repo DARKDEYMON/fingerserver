@@ -54,7 +54,7 @@ def permiso(date):
 	for r in res:
 		if(r.fecha_inicio == r.fecha_fin and date['fecha']==r.fecha_inicio):
 			return r
-		elif(r.fecha_inicio<date['fecha']<r.fecha_fin):
+		elif(r.fecha_inicio<=date['fecha']<=r.fecha_fin):
 			return r
 		return None
 
@@ -67,4 +67,30 @@ def permiso_personal(user, date):
 			return r
 		elif(r.fecha_inicio<date['fecha']<r.fecha_fin):
 			return r
+		return None
+
+def permiso1(res, date):
+	res = PermisosGenerales.objects.all()
+	#import pdb; pdb.set_trace()
+	for r in res:
+		if(r.fecha_inicio == r.fecha_fin and date==r.fecha_inicio):
+			return r
+		elif(r.fecha_inicio<=date<=r.fecha_fin):
+			return r
+		return None
+
+def permiso_personal1(res, date):
+	for r in res:
+		#import pdb; pdb.set_trace()
+		if(r.fecha_inicio == r.fecha_fin and date==r.fecha_inicio):
+			return r
+		elif(r.fecha_inicio<=date<=r.fecha_fin):
+			return r
+		return None
+
+def feriado1(date):
+	potosi = holidays.country_holidays('BO', subdiv='P')
+	if date in potosi:
+		return potosi.get(date)
+	else:
 		return None

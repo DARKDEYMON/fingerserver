@@ -1,0 +1,33 @@
+{% extends "base/base_list.html" %}
+	{% block name %}
+		<h2 class="text-center">Lista de Requerimientos Personales</h2>
+		<a type="button" class="btn btn-primary" href="{% url 'empleado:create_requerimiento' %}">Crea Requerimiento</a>
+	{% endblock name %}
+	{% block bodylist %}
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Username</th>
+					<th scope="col">Requerimriento</th>
+					<th scope="col">Atendido?</th>
+					<th scope="col">Opciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for object in object_list %}
+					<tr id='{{ object.id }}' class="target-blink">
+						<th>{{ object.id }}</th>
+						<td>{{ object.user }}</td>
+						<td>{{ object.requerimiento }}</td>
+						<td>{{ object.atendido }}</td>
+						<td>
+							
+
+							<a type="button" class="btn btn-primary" href="{% url 'empleado:update_requerimiento' object.id %}">Update Requerimiento</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endblock bodylist %}

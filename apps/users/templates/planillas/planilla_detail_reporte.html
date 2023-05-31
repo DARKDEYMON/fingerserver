@@ -93,12 +93,9 @@
 			</thead>
 			<tbody>
 				{% for f in object.estado_final %}
-					{% feriado f.fecha as feri %}
 					{% fin_semana f.fecha as fsemana %}
-					{% permiso f as perm %}
-					{% permiso_personal object.query f as pperm %}
 
-					<tr class="{% if feri %}feriado{% endif %} {% if fsemana %}finsemana{% endif %} {% if perm or pperm %}permiso{% endif %}">
+					<tr class="{% if f.feriado %}feriado{% endif %} {% if fsemana %}finsemana{% endif %} {% if f.fopg or f.fopp %}permiso{% endif %}">
 						<td class="border">
 							{{ f.fecha }}
 						</td>
@@ -135,14 +132,14 @@
 							{% if fsemana %}
 								Fin de semana
 							{% endif %}
-							{% if feri %}
-								{{ feri }}
+							{% if f.feriado %}
+								{{ f.feriado }}
 							{% endif %}
-							{% if perm %}
-								{{ perm }}
+							{% if f.fopg %}
+								{{ f.fopg }}
 							{% endif %}
-							{% if pperm %}
-								{{ pperm }}
+							{% if f.fopp %}
+								{{ f.fopp }}
 							{% endif %}
 						</td>
 					</tr>

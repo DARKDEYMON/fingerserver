@@ -26,9 +26,15 @@ class Kardex(models.Model):
 		blank = False,
 		null = False
 	)
+	indefinido = models.BooleanField(
+		blank=False,
+		null=False,
+		default=False
+	)
 	class Meta:
 		permissions = (
 			("users", "Modulo de Personal"),
+			("requerimientos", "Modulo de requerimientos"),
 		) 
 	def __str__(self):
 		return str(self.user)
@@ -119,6 +125,7 @@ class Metricas(models.Model):
 	class Meta:
 		permissions = (
 			("users", "Modulo de usuarios"),
+			("requerimientos", "Modulo de requerimientos"),
 		)
 	def __str__(self):
 		return str(self.user)

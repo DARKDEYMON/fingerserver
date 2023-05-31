@@ -81,4 +81,5 @@ urlpatterns = [
     path('updatepermisos/<int:pk>/', permission_required('users.users')(login_required(UpdatePermisosView.as_view())), name='update_permisos'),
 
     path('contrato/<int:pk>/', permission_required('users.users')(login_required(ContratoPDF.as_view())), name='contrato'),
+    path('kardexpdf/<int:pk>/', permission_required('users.users')(login_required(KardexUserPDF.as_view())), name='kardex_pdf'),
 ]

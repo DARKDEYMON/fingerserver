@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',RedirectView.as_view(url=reverse_lazy('users:main')), name='home'),
     path('users/', include(('apps.users.urls','users'), namespace='users')),
-    path('api-auth/', include('rest_framework.urls'))
+    path('empleado/', include(('apps.empleado.urls','empleados'), namespace='empleado')),
+    path('api-auth/', include('rest_framework.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -37,6 +37,7 @@
 									<li><a class="dropdown-item" href="{% url 'users:date_planillas' object.id %}">Generar Planilla</a></li>
 									<li><a class="dropdown-item" href="{% url 'users:date_planillashc' object.id %}">Generar Planilla H.C.</a></li>
 									<li><a class="dropdown-item" href="{% url 'users:create_or_update_kardex' object.id %}">Kardex</a></li>
+									<li><a class="dropdown-item" target="_blank" href="{% url 'users:kardex_pdf' object.id %}">PDF Kardex</a></li>
 									<li><a class="dropdown-item" target="_blank" href="{% url 'users:contrato' object.id %}">Contrato</a></li>
 									
 									<li><a class="dropdown-item" target="_blank" href="{% url 'users:permisos_sistema' object.id %}">Permisos S.</a></li>

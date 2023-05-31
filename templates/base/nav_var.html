@@ -16,6 +16,7 @@
               <li><a class="dropdown-item" href="{% url 'users:list_user' %}">Lista de Usuarios</a></li>
               <li><a class="dropdown-item" href="{% url 'users:constance' %}">Constantes</a></li>
               <li><a class="dropdown-item" href="{% url 'users:list_permisosg' %}">Permisos Generales</a></li>
+              <li><a class="dropdown-item" href="{% url 'empleado:list_quejas' %}">Quejas</a></li>
             </ul>
           </li>
         {% endif %}
@@ -24,8 +25,14 @@
               {{user}}
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="">Lista Quejas</a></li>
+              <li><a class="dropdown-item" href="{% url 'empleado:list_quejas_personales' %}">Lista Quejas {{ perms.users.requerimientos }}</a></li>
+              {% if perms.users.requerimientos %}
+              
+                <li><a class="dropdown-item" href="{% url 'empleado:list_requerimiento_personales' %}">Lista Requerimeintos</a></li>
+             
+              {% endif %}
             </ul>
+            
         </li>
       </ul>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
